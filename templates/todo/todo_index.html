@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
+<html lang="en">
+<head>
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/alertify.min.js"></script>
+  <script src="/static/js/jquery-3.0.0.min.js"></script>
+    <meta charset="UTF-8">
+    <title>todo</title>
+    <style>
+        form {
+            display: inline-block;
+        }
+        .col-center-block {
+            float: none;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+
+    <script src="/static/js/todo.js"></script>
+</head>
+<body>
+
+<div  class="container">
+
+
+<div style="text-align:center;">
+    <form class="navbar-form " action="{{ url_for('.add') }}" method="post">
+        <!--<div class="form-group">-->
+            <input type="text" class="form-control" name="task" placeholder="输入 todo">
+        <!--</div>-->
+        <button type="submit" class="btn btn-default">Add</button>
+    </form>
+</div>
+
+<div>
+    <ul class="list-group">
+        {% for todo in todo_list %}
+
+        <li class="list-group-item">
+            <span class="badge todo-time">{{ todo.created_time }}</span>
+            {{ todo.task }}
+            <button class="btn btn-sm" onClick="location.href='{{ url_for('.edit', id=todo._id) }}'">
+            <span class="glyphicon glyphicon-share-alt" aria-hidden="true" ></span>
+            Edit
+            </button>
+            <button class="btn btn btn-sm" onClick="location.href='{{ url_for('.delete', id=todo._id) }}'">
+            <span class="glyphicon glyphicon-share-alt" aria-hidden="true" ></span>
+            Delete
+            </button>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+</div>
+</body>
+ 
+
+</html>
