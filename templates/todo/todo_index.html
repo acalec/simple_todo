@@ -44,7 +44,7 @@
         {% for todo in todo_list %}
 
         <li class="list-group-item">
-            <span class="badge todo-time">{{ todo.created_time }}</span>
+            <span class="badge todo-time">{{ todo.created_time|format_time }}</span>
             {{ todo.task }}
             <button class="btn btn-sm" onClick="location.href='{{ url_for('.edit', id=todo._id) }}'">
             <span class="glyphicon glyphicon-share-alt" aria-hidden="true" ></span>

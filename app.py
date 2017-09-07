@@ -2,14 +2,14 @@ from flask import Flask
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 
-
 from models import db
-from models.todo import Todo
-from models.user import User
-
+from models.todo import format_time
 
 app = Flask(__name__)
 manager = Manager(app)
+
+env = app.jinja_env
+env.filters['format_time'] = format_time
 
 
 def configured_app():

@@ -1,15 +1,16 @@
 from models.user import User
 from routes import *
 
-
 main = Blueprint('user', __name__)
 
 Model = User
 
-
 xfrs_dict = {
     'd40a58205d884331aa7f2a7304ad6345': 0,
 }
+
+
+
 
 def random_string():
     import uuid
@@ -21,7 +22,7 @@ def index():
     ms = Model.query.all()
     xfrs = random_string()
     xfrs_dict[xfrs] = 0
-    return render_template('user/index.html', xfrs=xfrs,  user_list=ms)
+    return render_template('user/index.html', xfrs=xfrs, user_list=ms)
 
 
 @main.route('/edit/<id>')

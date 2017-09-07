@@ -72,4 +72,8 @@ class Todo(object):
         return dt
 
 
- 
+def format_time(value):
+    format = '%Y-%m-%d %H:%M'
+    value = time.localtime(value)
+    dt = time.strftime(format, value)
+    return dt
