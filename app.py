@@ -1,12 +1,24 @@
 from flask import Flask
+from flask_login import LoginManager
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 
-from models import db
+# from models import db
 from models.todo import format_time
+from models.user import User
 
 app = Flask(__name__)
 manager = Manager(app)
+
+app.config.from_object('config')
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get(user_id)
 
 env = app.jinja_env
 env.filters['format_time'] = format_time
@@ -17,7 +29,6 @@ def configured_app():
     import config
     app.secret_key = config.secret_key
     app.config['SQLALCHEMY_DATABASE_URI'] = config.db_uri
-    db.init_app(app)
     register_routes(app)
     configure_log(app)
     return app
@@ -30,10 +41,6 @@ def configure_log(app):
         stream_handler.setLevel(logging.INFO)
         app.logger.addHandler(stream_handler)
 
-
-def configure_manager():
-    Migrate(app, db)
-    manager.add_command('db', MigrateCommand)
 
 
 def register_routes(app):
@@ -59,6 +66,5 @@ def server():
 
 
 if __name__ == '__main__':
-    configure_manager()
     configured_app()
     manager.run()

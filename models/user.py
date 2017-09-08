@@ -1,36 +1,54 @@
-from . import ModelMixin
-from . import db
+import hashlib
+
+from flask_login import UserMixin
+
+from . import Mongua
 
 
-class User(db.Model, ModelMixin):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String())
+class User(Mongua, UserMixin):
+    # 子类必须实现 _fields 类方法来定义字段
+    @classmethod
+    def _fields(cls):
+        fields = [
+            ('username', str, ''),
+            ('password', str, ''),
+            ('salt', str, 'asdjf203'),
+        ]
+        fields.extend(super()._fields())
+        return fields
 
-    def __init__(self, form):
-        self.username = form.get('username', '')
+    @classmethod
+    def new(cls, form, **kwargs):
+        """
+        new 是给外部使用的函数
+        这是继承覆盖父类的方法, 因为要重写 password
+        """
+        m = super().new(form)
+        m.password = m.salted_password(form.get('password', ''))
+        m.save()
+        return m
 
-    def _update(self, form):
-        print('user update', self, form)
-        self.username = form.get('username', self.username)
+    def blacklist(self):
+        b = [
+            '_id',
+            'password',
+            'salt',
+        ]
+        return b
 
-    def valid_username(self, username):
-        return User.query.filter_by(username=self.username).first() == None
+    def salted_password(self, password):
+        salt = self.salt
+        hash1 = hashlib.md5(password.encode('ascii')).hexdigest()
+        hash2 = hashlib.md5((hash1 + salt).encode('ascii')).hexdigest()
+        return hash2
 
-    # 验证注册用户的合法性
-    def valid(self):
-        valid_username = self.valid_username()
-        valid_username_len = len(self.username) >= 6
-        valid_password_len = len(self.password) >= 6
-        msgs = []
-        if not valid_username:
-            message = '用户名已经存在'
-            msgs.append(message)
-        if not valid_username_len:
-            message = '用户名长度必须大于等于 6'
-            msgs.append(message)
-        if not valid_password_len:
-            message = '密码长度必须大于等于 6'
-            msgs.append(message)
-        status = valid_username and valid_username_len and valid_password_len
-        return status, msgs
+    def update_password(self, password):
+        self.password = self.salted_password(password)
+        self.save()
+
+    def validate_auth(self, form):
+        username = form.get('name', '')
+        password = form.get('password', '')
+        username_equals = self.name == username
+        password_equals = self.password == self.salted_password(password)
+        return username_equals and password_equals

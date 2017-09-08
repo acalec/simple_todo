@@ -3,7 +3,7 @@ import time
 import pymongo
 from bson.objectid import ObjectId
 
-from . import db
+# from . import db
 
 client = pymongo.MongoClient("mongodb://localhost:27017")
 print('连接数据库成功', client)

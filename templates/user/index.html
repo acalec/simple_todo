@@ -1,23 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <title>user index</title>
+  <title>MOBAN</title>
+  <link href="/static/css/login_style.css" rel='stylesheet' type='text/css' />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <script type="application/x-javascript">
+    addEventListener("load", function() {
+      setTimeout(hideURLbar, 0);
+    }, false);
+
+    function hideURLbar() {
+      window.scrollTo(0, 1);
+    }
+  </script>
 </head>
+
 <body>
-    <form action="{{ url_for('.add') }}" method="post">
-        <input type="hidden" name="xfrs" value="{{ xfrs }}">
-        <input name="username">
-        <button>add</button>
+
+  <h1> </h1>
+
+  <div class="app-location">
+    <h2>欢迎回来</h2>
+    <div class="line"><span></span></div>
+    <div class="location"><img src="/static/img/location.png" class="img-responsive" alt="" /></div>
+    <form method="post">
+      <!--<input class="form-control" type="hidden" name="xfrs" value="{{ xfrs }}">-->
+      <input type="text" class="text" name="username" value="用户名" onFocus="this.value = '';" onBlur="if (this.value == '') {this.value = '用户名';}">
+      <input type="password" name="password" value="Password" onFocus="this.value = '';" onBlur="if (this.value == '') {this.value = 'Password';}">
+      <div class="submit"><input type="submit" formaction="{{ url_for('user.login') }}"     value="登录"></div>
+      <div class="submit"><input type="submit" formaction="{{ url_for('.add') }}"    value="注册"></div>
+      <div class="clear"></div>
+      <div class="new">
+        <div class="clear"></div>
+      </div>
     </form>
-    {% for u in user_list %}
-    <div>
-        {{ u.id }} : {{ u.username | safe }}
-        <a href="{{ url_for('.delete', id=u.id) }}">删除</a>
-    </div>
-    {% endfor %}
+
+    <form method="POST" action="/">
+    {{ form.csrf_token }}
+    {{ form.name.label }} {{ form.name(size=20) }}
+    <input type="submit" value="Go">
+    </form>
+
+    <text class="footer" style="font-weight:bold;color:white">
+       示例帐号:
+       用户名:admin
+       密码:admin
+     </text>
+    <p class="footer">
+      <text >浙ICP备17027558号</text>
+    </p>
+  </div>
 </body>
+
 </html>
-<!--xsrf=d40a58205d884331aa7f2a7304ad6345&-->
-<!--password=18372&-->
-<!--phone_num=13008900987-->
+

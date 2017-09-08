@@ -1,56 +1,45 @@
 from models.user import User
 from routes import *
+from models.forms import LoginForm
 
 main = Blueprint('user', __name__)
 
 Model = User
 
-xfrs_dict = {
-    'd40a58205d884331aa7f2a7304ad6345': 0,
-}
-
-
-
-
-def random_string():
-    import uuid
-    return str(uuid.uuid4())
-
 
 @main.route('/')
 def index():
-    ms = Model.query.all()
-    xfrs = random_string()
-    xfrs_dict[xfrs] = 0
-    return render_template('user/index.html', xfrs=xfrs, user_list=ms)
-
-
-@main.route('/edit/<id>')
-def edit(id):
-    m = Model.query.get(id)
-    return render_template('user/edit.html', user=m)
+    u = current_user
+    print("u", u)
+    # if u is not None:
+    #     return redirect(url_for('todo.index'))
+    ms = Model.all()
+    return render_template('user/index.html', user_list=ms)
 
 
 @main.route('/add', methods=['POST'])
 def add():
     form = request.form
-    xfrs = form.get('xfrs')
-    if xfrs in xfrs_dict:
-        xfrs_dict.pop(xfrs)
-        Model.new(form)
-        return redirect(url_for('.index'))
+    # u = Model(form)
+    print("form1", form)
+    Model.new(form)
+    return redirect(url_for('todo.index'))
+
+
+@main.route('/login', methods=['GET', 'POST'])
+def login():
+    # form = request.form
+    form = LoginForm()
+    print("form", form['username'], form)
+    user = Model.find_one(username=form['username'])
+    print("user",user)
+    if user:
+        # Login and validate the user.
+        # user should be an instance of your `User` class
+        user = current_user
+        login_user(user)
+        flash('Logged in successfully.')
+        return redirect(url_for('todo.index'))
     else:
-        return 'ERROR 非法链接'
-
-
-@main.route('/update/<id>', methods=['POST'])
-def update(id):
-    form = request.form
-    Model.update(id, form)
-    return redirect(url_for('.index'))
-
-
-@main.route('/delete/<int:id>')
-def delete(id):
-    Model.delete(id)
-    return redirect(url_for('.index'))
+        flash('Invalid username or password')
+    return render_template('user/index.html', form=form)
