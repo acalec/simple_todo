@@ -1,6 +1,6 @@
+from models.forms import LoginForm
 from models.user import User
 from routes import *
-from models.forms import LoginForm
 
 main = Blueprint('user', __name__)
 
@@ -11,16 +11,13 @@ Model = User
 def index():
     u = current_user
     print("u", u)
-    # if u is not None:
-    #     return redirect(url_for('todo.index'))
     ms = Model.all()
-    return render_template('user/index.html', user_list=ms)
+    return render_template('user/login.html', user_list=ms)
 
 
 @main.route('/add', methods=['POST'])
 def add():
     form = request.form
-    # u = Model(form)
     print("form1", form)
     Model.new(form)
     return redirect(url_for('todo.index'))
@@ -30,16 +27,12 @@ def add():
 def login():
     # form = request.form
     form = LoginForm()
-    print("form", form['username'], form)
-    user = Model.find_one(username=form['username'])
-    print("user",user)
-    if user:
-        # Login and validate the user.
-        # user should be an instance of your `User` class
-        user = current_user
-        login_user(user)
-        flash('Logged in successfully.')
+    print("form",  form.username.data)
+    user = User.find_one(username=form.username.data)
+
+    if form.validate_on_submit() and user.validate_auth(form):
+        print('Logged in successfully.')
         return redirect(url_for('todo.index'))
     else:
-        flash('Invalid username or password')
-    return render_template('user/index.html', form=form)
+        print('Invalid username or password')
+    return render_template('user/login.html', form=form)
