@@ -1,6 +1,5 @@
 from flask import Flask
 from flask_login import LoginManager
-from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 
 # from models import db
@@ -13,12 +12,13 @@ manager = Manager(app)
 app.config.from_object('config')
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "login"
+login_manager.login_view = "user.login"
 
 
 @login_manager.user_loader
-def load_user(user_id):
-    return User.get(user_id)
+def load_user(id):
+    return User.get(int(id))
+
 
 env = app.jinja_env
 env.filters['format_time'] = format_time
@@ -40,7 +40,6 @@ def configure_log(app):
         stream_handler = logging.StreamHandler()
         stream_handler.setLevel(logging.INFO)
         app.logger.addHandler(stream_handler)
-
 
 
 def register_routes(app):

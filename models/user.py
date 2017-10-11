@@ -47,8 +47,10 @@ class User(Mongua, UserMixin):
         self.save()
 
     def validate_auth(self, form):
-        username = form.get('name', '')
-        password = form.get('password', '')
-        username_equals = self.name == username
+        username = form.username.data
+        password = form.password.data
+        username_equals = self.username == username
         password_equals = self.password == self.salted_password(password)
         return username_equals and password_equals
+
+

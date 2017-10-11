@@ -2,6 +2,7 @@ import json
 
 from models.todo import Todo
 from routes import *
+from flask_login import login_required
 
 main = Blueprint('todo', __name__)
 
@@ -18,12 +19,12 @@ def api_response(success, data=None, message=''):
 
 
 @main.route('/')
+@login_required
 def index():
     ms = Model.find()
     if ms is None:
         ms = []
     print("ms", ms)
-    # return api_response(True, data=ms)
     return render_template('todo/todo_index.html', todo_list=ms)
 
 
