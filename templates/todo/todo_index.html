@@ -33,7 +33,11 @@
 <div style="text-align:center;">
     <form class="navbar-form " action="{{ url_for('.add') }}" method="post">
         <!--<div class="form-group">-->
-            <input type="text" class="form-control" name="task" placeholder="输入 todo">
+            <input type="text" class="form-control" name="name" placeholder="输入 name">
+            <input type="text" class="form-control" name="reason" placeholder="输入 reason">
+            <input type="text" class="form-control" name="count" placeholder="输入 count">
+            <input type="text" class="form-control" name="maxx" placeholder="输入 max">
+            <input type="text" class="form-control" name="revise" placeholder="输入 revise">
         <!--</div>-->
         <button type="submit" class="btn btn-default">Add</button>
     </form>
@@ -45,7 +49,12 @@
 
         <li class="list-group-item">
             <span class="badge todo-time">{{ todo.created_time|format_time }}</span>
-            {{ todo.task }}
+            {{ todo.name }}
+            {{ todo.reason }}
+            {{ todo.count }}
+            {{ todo.maxx }}
+            {{ todo.revise }}
+              {{ todo.final_num }}
             <button class="btn btn-sm" onClick="location.href='{{ url_for('.edit', id=todo._id) }}'">
             <span class="glyphicon glyphicon-share-alt" aria-hidden="true" ></span>
             Edit
@@ -61,6 +70,6 @@
 
 </div>
 </body>
- 
+
 
 </html>

@@ -1,5 +1,5 @@
 import json
-
+import random
 from models.todo import Todo
 from routes import *
 from flask_login import login_required
@@ -31,7 +31,18 @@ def index():
 @main.route('/add', methods=['POST'])
 def add():
     form = request.form
-    Model.insert(form)
+    print("form", form)
+    if form.get('maxx') and form.get('revise') and form.get('count'):
+        maxx = int(form.get('maxx'))
+        count = int(form.get('count'))
+        revise = int(form.get('revise'))
+        final_num = random.randint(1, maxx * count + revise)
+
+        print("final_num", final_num)
+    else:
+        final_num = 0
+    Model.insert(form, final_num)
+    # Model.result = final_num
     return redirect(url_for('.index'))
 
 

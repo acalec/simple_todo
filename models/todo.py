@@ -14,14 +14,20 @@ db = client[mongodb_name]
 
 class Todo(object):
     def __init__(self, form):
-        self.task = form.get('content', '')
+        self.name = form.get('name', '')
+
         self.created_time = int(time.time())
         self.update_time = int(time.time())
 
     @classmethod
-    def insert(cls, form):
+    def insert(cls, form,final_num):
         u = {
-            'task': form.get('task', ''),
+            'name': form.get('name', ''),
+            'reason': form.get('reason', ''),
+            'count': form.get('count', ''),
+            'maxx': form.get('maxx', ''),
+            'revise': form.get('revise', ''),
+            'final_num': final_num,
             'created_time': int(time.time()),
             'updated_time': int(time.time()),
         }
